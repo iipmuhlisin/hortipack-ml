@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HortiPack ML - Prediksi BCT Kemasan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 100vh; color: #fff; }
+        .container { max-width: 500px; margin: 0 auto; padding: 40px 20px; }
+        h1 { text-align: center; margin-bottom: 10px; font-size: 2em; }
+        .subtitle { text-align: center; color: #888; margin-bottom: 30px; }
+        .card { background: rgba(255,255,255,0.1); border-radius: 15px; padding: 25px; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; }
+        select, input[type="range"] { width: 100%; padding: 12px; border-radius: 8px; border: none; margin-bottom: 15px; }
+        select { background: #fff; color: #333; }
+        .slider-container { margin-bottom: 20px; }
+        .slider-value { text-align: right; color: #4ade80; font-weight: bold; }
+        input[type="range"] { -webkit-appearance: none; background: #333; height: 8px; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: #4ade80; border-radius: 50%; cursor: pointer; }
+        button { width: 100%; padding: 15px; background: linear-gradient(135deg, #4ade80, #22c55e); border: none; border-radius: 10px; color: #fff; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
+        button:hover { transform: scale(1.02); }
+        .result { background: linear-gradient(135deg, #4ade80, #22c55e); border-radius: 15px; padding: 30px; text-align: center; margin-top: 20px; display: none; }
+        .result-value { font-size: 3em; font-weight: bold; }
+        .result-label { font-size: 1.2em; opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🥭 HortiPack ML</h1>
+        <p class="subtitle">Prediksi BCT Kemasan dengan Machine Learning</p>
+        
+        <div class="card">
+            <label>Komoditas</label>
+            <select id="komoditas">
+                <option>Mangga</option>
+                <option>Salak</option>
+                <option>Jeruk</option>
+                <option>Tomat</option>
+                <option>Cabai</option>
+            </select>
+            
+            <div class="slider-container">
+                <label>Gramatur (g/m²)</label>
+                <input type="range" id="gramatur" min="100" max="200" value="150">
+                <div class="slider-value" id="gramatur-val">150</div>
+            </div>
+            
+            <div class="slider-container">
+                <label>RH (%)</label>
+                <input type="range" id="rh" min="60" max="95" value="80">
+                <div class="slider-value" id="rh-val">80</div>
+            </div>
+            
+            <button onclick="predict()">Hitung BCT</button>
+        </div>
+        
+        <div class="result" id="result">
+            <div class="result-label">Prediksi BCT</div>
+            <div class="result-value" id="bct-value">0</div>
+            <div class="result-label">Newton</div>
+        </div>
+    </div>
+    
+    <script src="model.js"></script>
+    <script>
+        document.getElementById('gramatur').oninput = function() {
+            document.getElementById('gramatur-val').textContent = this.value;
+        }
+        document.getElementById('rh').oninput = function() {
+            document.getElementById('rh-val').textContent = this.value;
+        }
+        
+        function predict() {
+            const gramatur = parseFloat(document.getElementById('gramatur').value);
+            const rh = parseFloat(document.getElementById('rh').value);
+            const input = [gramatur, 400, 300, 250, rh];
+            const bct = score(input) / 100;
+            document.getElementById('bct-value').textContent = Math.round(bct);
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
+
